@@ -2,12 +2,16 @@ import { useState } from 'react'
 import { useSiteData } from './data'
 import { LoadingScreen } from './brand/LoadingScreen'
 import { AppShell } from './components/AppShell'
+import { Overview } from './views/Overview'
+import { DriftTimeline } from './views/DriftTimeline'
 import { PackView } from './views/PackView'
+
+type Tab = 'overview' | 'drift' | 'suites'
 
 export default function App() {
   const state = useSiteData()
-  // Default to the first pack (v1.0.0) — it carries the borderline story.
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [tab, setTab] = useState<Tab>('overview')
+  const [packId, setPackId] = useState<string | null>(null)
 
   if (state.status === 'loading') return <LoadingScreen />
   if (state.status === 'error')
@@ -19,31 +23,80 @@ export default function App() {
       </div>
     )
 
-  const { index, packs } = state.data
-  const currentId = selectedId ?? index[0]?.id
-  const pack = currentId ? packs[currentId] : null
+  const { index, packs, drift } = state.data
+  const currentPackId = packId ?? index[0]?.id
+  const pack = currentPackId ? packs[currentPackId] : null
+
+  const openPack = (id: string) => {
+    setPackId(id)
+    setTab('suites')
+  }
 
   return (
     <AppShell
       nav={
-        <nav className="flex items-center gap-1 text-sm">
-          {index.map((e) => (
-            <button
-              key={e.id}
-              onClick={() => setSelectedId(e.id)}
-              className={`rounded-md px-2.5 py-1 font-medium transition ${
-                e.id === currentId
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-              }`}
+        <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-1 text-sm">
+            <TabButton active={tab === 'overview'} onClick={() => setTab('overview')}>
+              Overview
+            </TabButton>
+            <TabButton active={tab === 'drift'} onClick={() => setTab('drift')}>
+              Drift
+            </TabButton>
+            <TabButton active={tab === 'suites'} onClick={() => setTab('suites')}>
+              Suites
+            </TabButton>
+          </nav>
+          {tab === 'suites' && (
+            <select
+              value={currentPackId}
+              onChange={(e) => setPackId(e.target.value)}
+              className="rounded-md border border-slate-200 bg-white px-2 py-1 text-sm text-slate-700"
+              aria-label="Select version"
             >
-              v{e.version}
-            </button>
-          ))}
-        </nav>
+              {index.map((e) => (
+                <option key={e.id} value={e.id}>
+                  v{e.version}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
       }
     >
-      {pack ? <PackView pack={pack} /> : <p>No pack selected.</p>}
+      {tab === 'overview' && (
+        <Overview
+          index={index}
+          packs={packs}
+          onOpenPack={openPack}
+          onOpenSuite={(id) => openPack(id)}
+        />
+      )}
+      {tab === 'drift' && <DriftTimeline index={index} packs={packs} drift={drift} />}
+      {tab === 'suites' && pack && <PackView pack={pack} />}
     </AppShell>
+  )
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-md px-3 py-1.5 font-medium transition ${
+        active
+          ? 'bg-indigo-50 text-indigo-700'
+          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+      }`}
+    >
+      {children}
+    </button>
   )
 }
