@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useSiteData } from './data'
 import { LoadingScreen } from './brand/LoadingScreen'
 import { AppShell } from './components/AppShell'
 import { Overview } from './views/Overview'
-import { DriftTimeline } from './views/DriftTimeline'
 import { PackView } from './views/PackView'
+
+// Drift pulls in Recharts (~370 kB); load it only when its tab is opened so
+// the landing stays light.
+const DriftTimeline = lazy(() =>
+  import('./views/DriftTimeline').then((m) => ({ default: m.DriftTimeline })),
+)
 
 type Tab = 'overview' | 'drift' | 'suites'
 
@@ -72,7 +77,13 @@ export default function App() {
           onOpenSuite={(id) => openPack(id)}
         />
       )}
-      {tab === 'drift' && <DriftTimeline index={index} packs={packs} drift={drift} />}
+      {tab === 'drift' && (
+        <Suspense
+          fallback={<p className="py-12 text-center text-sm text-slate-400">Loading charts…</p>}
+        >
+          <DriftTimeline index={index} packs={packs} drift={drift} />
+        </Suspense>
+      )}
       {tab === 'suites' && pack && <PackView pack={pack} />}
     </AppShell>
   )
