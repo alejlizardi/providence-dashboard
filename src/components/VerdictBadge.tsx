@@ -3,6 +3,7 @@
  *   - settled (PASS / FAIL)  → solid fill
  *   - unsettled ((point))    → hatched (diagonal stripes) + dashed outline
  * This distinction is the signature idea of the project; make it unmissable.
+ * Square, uppercase, instrument-panel styling from the dark theme.
  */
 import { TONE, VERDICT_STYLES, type Verdict } from '../theme'
 import { InfoTooltip } from './InfoTooltip'
@@ -18,18 +19,22 @@ export function VerdictBadge({
 }) {
   const style = VERDICT_STYLES[verdict]
   const tone = TONE[style.tone]
-  const pad = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs'
+  const sm = size === 'sm'
 
   // Hatched background for (point); solid tint for settled.
   const background = style.hatch
-    ? `repeating-linear-gradient(135deg, ${tone.bg}, ${tone.bg} 5px, ${hexA(tone.bar, 0.22)} 5px, ${hexA(tone.bar, 0.22)} 10px)`
+    ? `repeating-linear-gradient(135deg, ${tone.bg}, ${tone.bg} 5px, ${tone.barA} 5px, ${tone.barA} 10px)`
     : tone.bg
 
   return (
     <span className="inline-flex items-center gap-1">
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${pad}`}
+        className="inline-flex items-center whitespace-nowrap font-semibold uppercase"
         style={{
+          gap: 7,
+          padding: sm ? '3px 9px' : '5px 12px',
+          fontSize: sm ? 11 : 12,
+          letterSpacing: '0.03em',
           background,
           color: tone.fg,
           border: `1px ${style.hatch ? 'dashed' : 'solid'} ${tone.border}`,
@@ -37,8 +42,11 @@ export function VerdictBadge({
       >
         <span
           aria-hidden
-          className="inline-block h-2 w-2 rounded-full"
+          className="inline-block"
           style={{
+            width: 7,
+            height: 7,
+            flexShrink: 0,
             background: style.hatch ? 'transparent' : tone.bar,
             border: style.hatch ? `1.5px solid ${tone.bar}` : 'none',
           }}
@@ -53,13 +61,4 @@ export function VerdictBadge({
       )}
     </span>
   )
-}
-
-/** Hex + alpha → rgba() string. */
-function hexA(hex: string, a: number): string {
-  const h = hex.replace('#', '')
-  const r = parseInt(h.slice(0, 2), 16)
-  const g = parseInt(h.slice(2, 4), 16)
-  const b = parseInt(h.slice(4, 6), 16)
-  return `rgba(${r}, ${g}, ${b}, ${a})`
 }

@@ -1,42 +1,84 @@
 /**
- * A single pack: model card header + every suite rendered as a SuiteDetail.
- * Phase 1.2 entry point — this is where the suite-detail showcase lives.
+ * A single pack: a "Suite detail" header with a version selector, the model
+ * card meta, then every suite rendered as a SuiteDetail. Dark theme.
  */
-import type { Pack } from '../types'
+import type { IndexEntry, Pack } from '../types'
+import { BRAND, UI } from '../theme'
 import { VerdictBadge } from '../components/VerdictBadge'
 import { SuiteDetail } from './SuiteDetail'
 import { headlineVerdict } from '../lib/verdict'
 
-export function PackView({ pack }: { pack: Pack }) {
+export function PackView({
+  pack,
+  versions,
+  currentId,
+  onSelectVersion,
+}: {
+  pack: Pack
+  versions: IndexEntry[]
+  currentId: string
+  onSelectVersion: (id: string) => void
+}) {
   const m = pack.model
   return (
-    <div className="space-y-6">
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">
-              {m.name} <span className="font-normal text-slate-400">v{m.version}</span>
-            </h2>
-            {m.use_case && (
-              <p className="mt-1 max-w-2xl text-sm text-slate-500">{m.use_case.trim()}</p>
-            )}
+    <div style={{ animation: 'provIn .5s ease', paddingTop: 80 }}>
+      <div className="flex items-end justify-between gap-5">
+        <div>
+          <div style={{ fontSize: 12, letterSpacing: '0.1em', color: BRAND.accent, marginBottom: 26 }}>
+            Suite detail · v{m.version}
           </div>
-          <VerdictBadge verdict={headlineVerdict(pack)} />
+          <h1 style={{ margin: 0, fontSize: 46, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
+            Suite detail
+          </h1>
         </div>
-        <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm">
-          {m.owner && <Meta label="Owner" value={m.owner} />}
-          {m.materiality_tier != null && <Meta label="Materiality" value={`Tier ${m.materiality_tier}`} />}
-          <Meta
-            label="Suites"
-            value={`${pack.summary.suites_passed}/${pack.summary.total_suites} passing`}
-          />
-          <Meta label="Provider" value={pack.provider.type} />
-        </dl>
-      </section>
+        <div className="relative mb-2 flex flex-shrink-0 items-center">
+          <select
+            value={currentId}
+            onChange={(e) => onSelectVersion(e.target.value)}
+            aria-label="Select version"
+            style={{
+              appearance: 'none',
+              background: UI.surfaceAlt,
+              color: UI.text,
+              border: 0,
+              padding: '9px 32px 9px 14px',
+              fontSize: 13,
+              cursor: 'pointer',
+            }}
+          >
+            {versions.map((e) => (
+              <option key={e.id} value={e.id}>
+                v{e.version}
+              </option>
+            ))}
+          </select>
+          <span aria-hidden className="pointer-events-none absolute right-3" style={{ color: UI.textDim, fontSize: 9 }}>
+            ▼
+          </span>
+        </div>
+      </div>
 
-      {pack.suites.map((s) => (
-        <SuiteDetail key={s.suite} suite={s} />
-      ))}
+      <p style={{ margin: '24px 0 40px', fontSize: 16, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>
+        Every statistic carries its method. The interval is the actual Wilson
+        interval; the fill encodes whether the verdict is settled.
+      </p>
+
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-2" style={{ marginBottom: 28 }}>
+        <Meta label="Model" value={`${m.name} v${m.version}`} />
+        {m.owner && <Meta label="Owner" value={m.owner} />}
+        {m.materiality_tier != null && <Meta label="Materiality" value={`Tier ${m.materiality_tier}`} />}
+        <Meta label="Suites" value={`${pack.summary.suites_passed}/${pack.summary.total_suites} passing`} />
+        <Meta label="Provider" value={pack.provider.type} />
+        <span className="ml-auto">
+          <VerdictBadge verdict={headlineVerdict(pack)} />
+        </span>
+      </div>
+
+      <div className="flex flex-col" style={{ gap: 2 }}>
+        {pack.suites.map((s) => (
+          <SuiteDetail key={s.suite} suite={s} />
+        ))}
+      </div>
     </div>
   )
 }
@@ -44,8 +86,12 @@ export function PackView({ pack }: { pack: Pack }) {
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
-      <dd className="mt-0.5 max-w-xs truncate font-medium text-slate-800">{value}</dd>
+      <dt className="uppercase" style={{ fontSize: 10, letterSpacing: '0.16em', color: UI.textFaint }}>
+        {label}
+      </dt>
+      <dd className="mt-1 max-w-xs truncate font-medium" style={{ fontSize: 14, color: '#e8e8e4' }}>
+        {value}
+      </dd>
     </div>
   )
 }

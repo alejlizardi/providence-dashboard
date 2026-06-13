@@ -17,7 +17,7 @@ export function InfoTooltip({ stat, label }: { stat: StatKey; label?: string }) 
         type="button"
         aria-label={label ? `About ${label}` : 'More information'}
         aria-describedby={open ? id : undefined}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 text-[10px] font-semibold leading-none text-slate-500 hover:border-slate-400 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/20 text-[10px] font-semibold leading-none text-neutral-400 hover:border-white/40 hover:text-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}
@@ -29,7 +29,7 @@ export function InfoTooltip({ stat, label }: { stat: StatKey; label?: string }) 
         <span
           id={id}
           role="tooltip"
-          className="absolute left-1/2 top-6 z-20 w-72 -translate-x-1/2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs font-normal leading-relaxed text-slate-600 shadow-lg"
+          className="absolute left-1/2 top-6 z-20 w-72 -translate-x-1/2 rounded-lg border border-white/10 bg-neutral-800 px-3 py-2 text-left text-xs font-normal leading-relaxed text-neutral-300 shadow-xl"
         >
           {text}
         </span>

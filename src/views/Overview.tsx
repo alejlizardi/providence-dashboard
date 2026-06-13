@@ -1,9 +1,11 @@
 /**
  * V1 — overview / landing. Leads with the borderline "passes but NOT settled"
- * story (legible in 5 seconds), then the pack series as cards. This screen
- * carries the 90-second impression: stats + product judgment at a glance.
+ * story (legible in 5 seconds), then the pack series as version tiles. This
+ * screen carries the 90-second impression: stats + product judgment at a glance.
+ * Dark "instrument-panel" layout from the Claude Design pass.
  */
 import type { IndexEntry, Pack } from '../types'
+import { BRAND, TONE, UI, VERDICT_STYLES } from '../theme'
 import { VerdictBadge } from '../components/VerdictBadge'
 import { ConfidenceBar } from '../components/ConfidenceBar'
 import { findBorderlineStory } from '../lib/story'
@@ -21,56 +23,104 @@ export function Overview({
   onOpenSuite: (id: string, suite: string) => void
 }) {
   const story = findBorderlineStory(index, packs)
-  const storySuite =
-    story && packs[story.packId]?.suites.find((s) => s.suite === story.suite)
+  const storyPack = story && packs[story.packId]
+  const storySuite = storyPack?.suites.find((s) => s.suite === story?.suite)
+  const modelName = index[0]?.model_name
 
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          AI eval results, made statistically defensible
-        </h1>
-        <p className="mt-1 text-slate-500">
-          Pass rates with the uncertainty attached — settled vs not, and drift
-          you can actually defend.
-        </p>
-      </header>
+    <div style={{ animation: 'provIn .5s ease', paddingTop: 70 }}>
+      <div style={{ fontSize: 12, letterSpacing: '0.1em', color: BRAND.accent, marginBottom: 26 }}>
+        Statistical evidence engine
+      </div>
+      <h1
+        style={{
+          margin: '0 0 18px',
+          fontSize: 52,
+          lineHeight: 1.0,
+          fontWeight: 700,
+          letterSpacing: '-0.03em',
+          color: UI.textStrong,
+          maxWidth: '15ch',
+        }}
+      >
+        AI eval results, made defensible
+      </h1>
+      <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6, color: UI.textMuted, maxWidth: 520 }}>
+        Pass rates with the uncertainty attached — settled vs not, and drift you
+        can actually defend.
+      </p>
 
-      {story && storySuite && (
-        <section className="overflow-hidden rounded-xl border border-amber-200 bg-amber-50/60 shadow-sm">
-          <div className="border-b border-amber-200 bg-amber-50 px-6 py-3">
-            <span className="text-xs font-semibold uppercase tracking-widest text-amber-700">
-              Read this in five seconds
-            </span>
-          </div>
-          <div className="grid gap-6 p-6 md:grid-cols-[1fr_minmax(0,1.1fr)] md:items-center">
+      {story && storySuite && storyPack && (
+        <div style={{ position: 'relative', marginTop: 54 }}>
+          <div
+            aria-hidden
+            style={{ position: 'absolute', inset: '-12px -16px', background: UI.surfaceAlt, transform: 'skewY(-2deg)', zIndex: 0 }}
+          />
+          <div
+            className="prov-feature"
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              background: UI.surfaceAlt,
+              color: UI.text,
+              padding: '44px 46px',
+              display: 'grid',
+              gridTemplateColumns: '1.05fr 0.95fr',
+              gap: 44,
+              alignItems: 'center',
+            }}
+          >
             <div>
-              <p className="text-lg leading-relaxed text-slate-800">
-                <span className="font-mono text-base text-slate-600">
-                  {story.suite}
-                </span>{' '}
-                <span className="font-semibold text-slate-900">
-                  passes at {pct(story.rate)}
-                </span>{' '}
-                (target {pct(story.threshold)}) — but{' '}
-                <span className="font-bold text-amber-700">NOT settled</span>:
-                95% CI [{pct(story.ciLow)}, {pct(story.ciHigh)}]
-                {story.additionalItems
-                  ? `, ~${story.additionalItems} more items needed`
-                  : ''}
-                .{' '}
-                <span className="font-semibold text-slate-900">
-                  Don’t ship yet.
+              <div style={{ fontSize: 23, fontWeight: 700, letterSpacing: '-0.01em', color: BRAND.accent, lineHeight: 1 }}>
+                Read in 5 seconds
+              </div>
+              <div
+                style={{ marginTop: 8, fontSize: 30, fontWeight: 700, letterSpacing: '-0.02em', color: UI.textStrong }}
+              >
+                {story.suite}
+              </div>
+              <div style={{ marginTop: 14, display: 'flex', gap: 20, flexWrap: 'wrap', fontSize: 15, color: '#8c8c8c' }}>
+                <span style={{ borderBottom: `2px solid ${BRAND.accent}`, paddingBottom: 2, color: UI.text, fontWeight: 700 }}>
+                  {pct(story.rate)} pass
                 </span>
-              </p>
+                <span>
+                  95% CI [{pct(story.ciLow)}, {pct(story.ciHigh)}]
+                </span>
+                <span>target {pct(story.threshold)}</span>
+              </div>
+              <div style={{ marginTop: 26, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {storyPack.suites.map((s) => {
+                  const tone = TONE[VERDICT_STYLES[s.verdict].tone]
+                  return (
+                    <div key={s.suite} style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '4px 0' }}>
+                      <span style={{ width: 9, height: 9, flexShrink: 0, background: tone.bar }} />
+                      <span style={{ fontSize: 21, fontWeight: 700, color: '#fff', minWidth: 64 }}>
+                        {pct(s.pass_rate)}
+                      </span>
+                      <span style={{ fontSize: 21, fontWeight: 500, color: '#cfcfca' }}>{s.suite}</span>
+                    </div>
+                  )
+                })}
+              </div>
               <button
                 onClick={() => onOpenSuite(story.packId, story.suite)}
-                className="mt-4 inline-flex items-center gap-1 rounded-md bg-white px-3 py-1.5 text-sm font-medium text-amber-800 shadow-sm ring-1 ring-amber-200 hover:bg-amber-100"
+                style={{
+                  marginTop: 28,
+                  border: 0,
+                  background: 'transparent',
+                  padding: 0,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: UI.text,
+                  cursor: 'pointer',
+                  borderBottom: `2px solid ${BRAND.accent}`,
+                  lineHeight: 1.6,
+                }}
               >
                 See the evidence →
               </button>
             </div>
-            <div className="rounded-lg bg-white/70 p-4">
+            <div>
               <ConfidenceBar
                 rate={storySuite.pass_rate}
                 ciLow={storySuite.ci95_low}
@@ -78,38 +128,73 @@ export function Overview({
                 threshold={storySuite.threshold}
                 verdict={storySuite.verdict}
                 ciMethod={storySuite.ci_method}
+                height={60}
+                showCaption={false}
               />
+              <div style={{ marginTop: 14, fontSize: 12.5, lineHeight: 1.5, color: '#8c8c8c' }}>
+                <span style={{ color: '#fff', fontWeight: 700 }}>NOT settled</span> — the
+                interval crosses below target
+                {story.additionalItems ? `. ~${story.additionalItems} more items needed` : ''}.
+              </div>
             </div>
           </div>
-        </section>
+        </div>
       )}
 
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
-          Validation history · {index[0]?.model_name}
-        </h2>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {index.map((e) => {
-            const pack = packs[e.id]
-            return (
-              <li key={e.id}>
+      <div style={{ marginTop: 66 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 22 }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: UI.text }}>Validation history</div>
+          <div style={{ fontSize: 12, color: UI.textDim }}>{modelName}</div>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <div
+            aria-hidden
+            style={{ position: 'absolute', inset: '-10px -14px', background: UI.skew, transform: 'skewY(1.4deg)', zIndex: 0 }}
+          />
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+              gap: 2,
+              background: UI.bg,
+            }}
+          >
+            {index.map((e) => {
+              const pack = packs[e.id]
+              return (
                 <button
+                  key={e.id}
                   onClick={() => onOpenPack(e.id)}
-                  className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow"
+                  className="prov-row text-left"
+                  style={{
+                    border: 0,
+                    background: UI.surfaceAlt,
+                    padding: '28px 26px 30px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 218,
+                    transition: 'background .15s',
+                  }}
                 >
-                  <div>
-                    <p className="font-semibold text-slate-900">v{e.version}</p>
-                    <p className="text-sm text-slate-500">
-                      {e.suites_passed}/{e.total_suites} suites passing
-                    </p>
-                  </div>
-                  {pack && <VerdictBadge verdict={headlineVerdict(pack)} size="sm" />}
+                  <span style={{ fontSize: 12, color: '#8a8a86', marginBottom: 16 }}>{e.model_name}</span>
+                  <span style={{ fontSize: 33, fontWeight: 600, letterSpacing: '-0.02em', color: UI.textStrong, lineHeight: 1 }}>
+                    v{e.version}
+                  </span>
+                  <span style={{ fontSize: 14, color: UI.textMuted, marginTop: 10 }}>
+                    {e.suites_passed}/{e.total_suites} suites passing
+                  </span>
+                  <span style={{ marginTop: 'auto', paddingTop: 18 }}>
+                    {pack && <VerdictBadge verdict={headlineVerdict(pack)} size="sm" />}
+                  </span>
                 </button>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
+              )
+            })}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

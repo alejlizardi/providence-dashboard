@@ -1,77 +1,57 @@
 /**
- * Brand slots. The providence mark is a PLACEHOLDER (the error-bar glyph) until
- * a real providence logo is made; PeriapsisMark renders the real vendored asset.
- * In prominent places we compose "Providence [mark] · by Periapsis [mark]" via
- * <BrandLockup variant="full" />. Everything here is presentational so the
- * real logo drops into ProvidenceMark with no other changes.
+ * Brand slots. The glyph is the kept confidence-interval error bar; the
+ * wordmark is the constructed geometric "providence" mark (drawn, not typed).
+ * In prominent places we compose "providence [glyph] · by Periapsis [orbit
+ * glyph]" via <BrandLockup variant="full" />. All marks live in marks.tsx;
+ * this file just composes them.
  */
-import { BRAND } from '../theme'
+import { UI } from '../theme'
+import { Glyph, ProvidenceWordmark } from './marks'
 
 const base = import.meta.env.BASE_URL
 
-/** Placeholder providence mark: a confidence-interval error bar. Swap later. */
-export function ProvidenceMark({ size = 22 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      role="img"
-      aria-label="providence"
-      data-placeholder="providence-logo"
-    >
-      <rect width="32" height="32" rx="7" fill={BRAND.accent} />
-      <line x1="7" y1="16" x2="25" y2="16" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="7" y1="11" x2="7" y2="21" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="25" y1="11" x2="25" y2="21" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="19" cy="16" r="3" fill="#a5b4fc" />
-    </svg>
-  )
-}
-
-/** Real Periapsis orbit mark (vendored to public/brand/). */
-export function PeriapsisMark({ size = 18 }: { size?: number }) {
+/** The Periapsis orbit-sweep portrait mark, used next to "by Periapsis". */
+export function PeriapsisGlyph({ size = 26 }: { size?: number }) {
   return (
     <img
-      src={`${base}brand/periapsis-mark.svg`}
-      width={size}
-      height={size}
+      src={`${base}brand/periapsis_glyph.svg`}
       alt="Periapsis"
-      style={{ display: 'block' }}
+      style={{ height: size, width: 'auto', display: 'block' }}
     />
-  )
-}
-
-export function ProvidenceWordmark() {
-  return (
-    <span className="font-semibold tracking-tight text-slate-900">providence</span>
   )
 }
 
 /**
  * variant:
- *  - "compact": providence mark + wordmark (header corners)
- *  - "full":    "providence · by Periapsis" lockup (loading, hero, footer)
+ *  - "compact": providence glyph + wordmark (header / corners)
+ *  - "full":    "providence · by Periapsis" lockup (loading, footer)
  */
 export function BrandLockup({
   variant = 'compact',
   size = 22,
+  color,
 }: {
   variant?: 'compact' | 'full'
   size?: number
+  color?: string
 }) {
   return (
-    <span className="inline-flex items-center gap-2">
-      <ProvidenceMark size={size} />
-      <ProvidenceWordmark />
+    <span className="inline-flex items-center gap-3">
+      <Glyph size={size + 4} />
+      <ProvidenceWordmark height={size - 3} color={color} />
       {variant === 'full' && (
-        <span className="ml-1 inline-flex items-center gap-1.5 text-sm text-slate-400">
-          <span aria-hidden>·</span>
-          <span>by</span>
-          <PeriapsisMark size={Math.round(size * 0.8)} />
-          <span className="font-medium text-slate-500">Periapsis</span>
+        <span className="ml-1 inline-flex items-center gap-2.5">
+          <span aria-hidden style={{ color: UI.textDim }}>
+            ·
+          </span>
+          <span style={{ fontSize: 13, letterSpacing: '0.04em', color: UI.textDim }}>
+            by Periapsis
+          </span>
+          <PeriapsisGlyph size={size + 6} />
         </span>
       )}
     </span>
   )
 }
+
+export { Glyph, ProvidenceWordmark }

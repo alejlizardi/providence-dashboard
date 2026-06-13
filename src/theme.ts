@@ -1,10 +1,13 @@
 /**
  * Design tokens — the single place to re-skin the dashboard.
  *
- * The palette below is an intentional PLACEHOLDER (indigo/slate). Aesthetics
- * are meant to be iterated later; keep all color/shape decisions here so a
- * re-skin touches this file, not the components. Components read these tokens
- * and stay presentational.
+ * Dark "instrument-panel" theme (Periapsis). Near-black #141414 base, an indigo
+ * #7c84ff accent that carries the brand / threshold line / point estimate, and
+ * three verdict tones tuned for dark contrast. All color decisions live here so
+ * a re-skin touches this file; components read these tokens and stay
+ * presentational.
+ *
+ * Sourced from the Claude Design pass (Providence.dc.html); see docs/DESIGN.md.
  */
 
 /** Verdict is the core concept: settled (PASS/FAIL) vs unsettled ((point)). */
@@ -16,8 +19,7 @@ export const isPass = (v: Verdict): boolean => v.startsWith('PASS')
 /**
  * Verdict styling. The settled-vs-unsettled distinction is shown VISUALLY:
  * settled verdicts get a solid fill, `(point)` verdicts get a hatched/outlined
- * treatment. `fill` is a Tailwind-ish token resolved by components; `hatch`
- * flags whether to render the diagonal-stripe pattern.
+ * treatment. `hatch` flags whether to render the diagonal-stripe pattern.
  */
 export interface VerdictStyle {
   label: string
@@ -35,50 +37,79 @@ export const VERDICT_STYLES: Record<Verdict, VerdictStyle> = {
 }
 
 /**
- * Tone → concrete colors. PLACEHOLDER values. The orange accent slot is
- * reserved (the Periapsis brand uses #FF4F00) for when we adopt brand colors.
+ * Tone → concrete colors, tuned for the dark theme. `fg` text, `bar` the solid
+ * mark/stroke, `bg`/`barA` translucent fills (the second for hatch stripes),
+ * `border` the outline.
  */
 export const TONE = {
   ok: {
-    fg: '#047857', // emerald-700
-    bg: '#ecfdf5', // emerald-50
-    bar: '#10b981', // emerald-500
-    border: '#a7f3d0',
+    fg: '#4ccf8e',
+    bar: '#35c27e',
+    bg: 'rgba(76,207,142,0.13)',
+    barA: 'rgba(76,207,142,0.24)',
+    border: 'rgba(76,207,142,0.34)',
   },
   warn: {
-    fg: '#b45309', // amber-700
-    bg: '#fffbeb', // amber-50
-    bar: '#f59e0b', // amber-500
-    border: '#fde68a',
+    fg: '#e3a531',
+    bar: '#d9962a',
+    bg: 'rgba(227,165,49,0.13)',
+    barA: 'rgba(227,165,49,0.24)',
+    border: 'rgba(227,165,49,0.36)',
   },
   bad: {
-    fg: '#be123c', // rose-700
-    bg: '#fff1f2', // rose-50
-    bar: '#f43f5e', // rose-500
-    border: '#fecdd3',
+    fg: '#ef5566',
+    bar: '#e8404f',
+    bg: 'rgba(239,85,102,0.13)',
+    barA: 'rgba(239,85,102,0.24)',
+    border: 'rgba(239,85,102,0.36)',
   },
   neutral: {
-    fg: '#334155', // slate-700
-    bg: '#f8fafc', // slate-50
-    bar: '#94a3b8', // slate-400
-    border: '#e2e8f0',
+    fg: '#9a9a96',
+    bar: '#6e6e6a',
+    bg: 'rgba(255,255,255,0.06)',
+    barA: 'rgba(255,255,255,0.12)',
+    border: 'rgba(255,255,255,0.12)',
   },
 } as const
 
 export type Tone = keyof typeof TONE
 
-/** Chart tokens, kept here so the dataviz palette is tunable in one place. */
-export const CHART = {
-  threshold: '#6366f1', // indigo-500 — the threshold line
-  ciBar: '#cbd5e1', // slate-300 — the interval bar
-  point: '#1e293b', // slate-800 — the point-estimate dot
-  driftFlag: '#e11d48', // rose-600 — the highlighted drift event
-  grid: '#eef2f7',
+/**
+ * UI surface + text tokens. The dark "instrument-panel" greys, in one place so
+ * components don't hardcode slate-* utilities.
+ */
+export const UI = {
+  bg: '#141414', // page background (Berghain near-black)
+  surface: '#1e1e1e', // cards / panels
+  surfaceAlt: '#262626', // raised panel (feature, history tiles)
+  surfaceInset: '#171717', // inset wells (certificate)
+  hover: '#1a1a1a', // row hover
+  border: 'rgba(255,255,255,0.08)',
+  skew: '#222', // skewed shadow slab behind feature/history blocks
+  text: '#ededed', // primary text
+  textStrong: '#f4f4f2', // headings
+  textMuted: '#9a9a96', // body secondary
+  textDim: '#7a7a76', // captions
+  textFaint: '#5a5a56', // labels / eyebrows
+  textGhost: '#494945', // footnotes
 } as const
 
-/** Brand accents (placeholder until the providence logo + palette land). */
+/** Chart tokens, kept here so the dataviz palette is tunable in one place. */
+export const CHART = {
+  threshold: '#7c84ff', // the threshold line + accent
+  point: '#ffffff', // the point-estimate dot (on dark)
+  pointStroke: '#141414',
+  track: 'rgba(255,255,255,0.12)', // baseline track
+  grid: 'rgba(255,255,255,0.07)', // sparkline gridlines
+  driftFlag: '#ef5566', // the highlighted drift event
+  neutralLine: '#9a9a96', // non-drift sparkline line
+  axis: '#6e6e6a',
+} as const
+
+/** Brand accents. */
 export const BRAND = {
-  accent: '#6366f1', // indigo-500 (placeholder)
-  ink: '#0f172a', // slate-900
-  periapsisOrange: '#FF4F00', // real Periapsis accent, reserved
+  accent: '#7c84ff', // indigo — brand, threshold, active state, point estimate
+  accentDot: '#9aa0ff', // brighter indigo for the i-dot / small highlights
+  ink: '#0e1117', // dark ink (for light-on logo variants)
+  periapsisOrange: '#FF4F00', // Periapsis orbit body
 } as const
