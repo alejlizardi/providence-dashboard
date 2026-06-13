@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Periapsis mark">
+  <!-- orbit: 3-4-5 ellipse, e = 0.6 -->
+  <ellipse cx="52" cy="50" rx="38" ry="30.4" fill="none" stroke="#111418" stroke-width="5.5"/>
+  <!-- planet: at the left focus, not the center -->
+  <circle cx="29.2" cy="50" r="6.5" fill="#111418"/>
+  <!-- periapsis point: orbiting body at closest approach -->
+  <circle cx="14" cy="50" r="4.75" fill="#FF4F00"/>
+</svg>
