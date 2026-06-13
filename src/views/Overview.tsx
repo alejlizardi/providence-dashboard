@@ -142,10 +142,17 @@ export function Overview({
       )}
 
       <div style={{ marginTop: 66 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 22 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginBottom: 8 }}>
           <div style={{ fontSize: 22, fontWeight: 700, color: UI.text }}>Validation history</div>
-          <div style={{ fontSize: 12, color: UI.textDim }}>{modelName}</div>
+          <div style={{ fontSize: 12, color: UI.textDim }}>
+            model: <span style={{ color: UI.text }}>{modelName}</span>
+          </div>
         </div>
+        <p style={{ margin: '0 0 22px', fontSize: 14, lineHeight: 1.6, color: UI.textMuted, maxWidth: 640 }}>
+          Each tile is one <span style={{ color: UI.text }}>release of {modelName}</span> — the
+          model was re-validated at every version. The badge is the release’s headline
+          verdict (its worst suite). Open one to see the suites behind it.
+        </p>
         <div style={{ position: 'relative' }}>
           <div
             aria-hidden
@@ -179,7 +186,12 @@ export function Overview({
                     transition: 'background .15s',
                   }}
                 >
-                  <span style={{ fontSize: 12, color: '#8a8a86', marginBottom: 16 }}>{e.model_name}</span>
+                  <span
+                    className="uppercase"
+                    style={{ fontSize: 10.5, letterSpacing: '0.16em', color: UI.textFaint, marginBottom: 16 }}
+                  >
+                    Release
+                  </span>
                   <span style={{ fontSize: 33, fontWeight: 600, letterSpacing: '-0.02em', color: UI.textStrong, lineHeight: 1 }}>
                     v{e.version}
                   </span>
