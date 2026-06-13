@@ -45,10 +45,37 @@ export function Overview({
       >
         AI eval results, made defensible
       </h1>
-      <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6, color: UI.textMuted, maxWidth: 520 }}>
-        Pass rates with the uncertainty attached — settled vs not, and drift you
-        can actually defend.
-      </p>
+      <div
+        style={{
+          marginTop: 28,
+          maxWidth: 680,
+          borderLeft: `2px solid ${BRAND.accent}`,
+          paddingLeft: 22,
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 17, lineHeight: 1.65, color: UI.text }}>
+          Your eval suite gives you a pass rate. providence tells you whether you
+          can stand behind it. It reads the raw results from a run (promptfoo,
+          Inspect AI, or your own harness) and packages them into a versioned
+          evidence pack: every item, the statistics behind each verdict, and a
+          hash of the config and datasets, so six months later you can prove the
+          numbers are the ones you actually produced.
+        </p>
+        <p style={{ margin: '16px 0 0', fontSize: 17, lineHeight: 1.65, color: UI.textMuted }}>
+          The gap it closes is the one between “94% passed” and “94%, and we have
+          enough data to ship on it.” A pass rate on 16 items isn’t evidence yet;
+          it’s a point estimate with a wide margin hiding behind it. providence
+          attaches a real confidence interval, says out loud when a verdict is too
+          thin to settle, and uses an exact test to tell a genuine regression from
+          run-to-run noise. Drop it into CI and a build can fail on a result that no
+          longer holds up.
+        </p>
+        <p style={{ margin: '16px 0 0', fontSize: 15, lineHeight: 1.6, color: UI.textDim }}>
+          What you’re looking at below is one model, <span style={{ color: UI.textMuted }}>credit-memo-summarizer</span>,
+          validated across four releases. Open a release to read its suites, or
+          check the Drift tab, where one release trips a real regression.
+        </p>
+      </div>
 
       {story && storySuite && storyPack && (
         <div style={{ position: 'relative', marginTop: 54 }}>

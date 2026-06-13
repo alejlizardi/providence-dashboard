@@ -39,10 +39,17 @@ export function DriftTimeline({
       <h1 className="prov-view-title" style={{ margin: 0, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
         Drift over versions
       </h1>
-      <p style={{ margin: '24px 0 48px', fontSize: 16, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>
-        Pass rate with its 95% interval across releases. A change is flagged only
-        when Fisher’s exact test, Holm-adjusted across all suites, rules it
-        unlikely to be noise.
+      <p style={{ margin: '24px 0 16px', fontSize: 16, lineHeight: 1.65, color: UI.text, maxWidth: 720 }}>
+        One chart per suite, tracking its pass rate and 95% interval across every
+        release of the model. This is the view that answers “did the last release
+        break anything that was working before?”
+      </p>
+      <p style={{ margin: '0 0 48px', fontSize: 15, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>
+        A drop only earns the DRIFT flag when Fisher’s exact test says it’s unlikely
+        to be noise. And since you’re watching several suites at once, the p-values
+        are Holm-adjusted, so the chance of a false alarm somewhere doesn’t creep up
+        with every suite you add. The red event below is real: factual_accuracy fell
+        from 100% to 56% between v1.1.0 and v1.2.0.
         <InfoTooltip stat="holm" label="Holm adjustment" />
       </p>
 

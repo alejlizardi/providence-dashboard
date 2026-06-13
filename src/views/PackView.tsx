@@ -58,9 +58,19 @@ export function PackView({
         </div>
       </div>
 
-      <p style={{ margin: '24px 0 40px', fontSize: 16, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>
-        Every statistic carries its method. The interval is the actual Wilson
-        interval; the fill encodes whether the verdict is settled.
+      <p style={{ margin: '24px 0 16px', fontSize: 16, lineHeight: 1.65, color: UI.text, maxWidth: 720 }}>
+        One release, broken out into the suites that were run against it. Each bar
+        is the real Wilson confidence interval around the suite’s pass rate, and the
+        dashed line is the threshold it has to clear. The bar is the evidence; the
+        line is the target.
+      </p>
+      <p style={{ margin: '0 0 40px', fontSize: 15, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>
+        A solid fill means the verdict is settled: the whole interval sits above
+        the threshold, so the pass holds even at the pessimistic end of the
+        sample. A hatched fill is a PASS (point) — the average cleared the bar, but
+        the interval still dips below it, so there isn’t enough data to call it yet.
+        When that happens the suite shows how many more items it would take to
+        settle.
       </p>
 
       <div className="flex flex-wrap items-center gap-x-8 gap-y-2" style={{ marginBottom: 28 }}>
