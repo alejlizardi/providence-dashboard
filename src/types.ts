@@ -1,5 +1,5 @@
 /**
- * TypeScript mirror of evidentry's results.json (see schema/results.schema.json
+ * TypeScript mirror of providence's results.json (see schema/results.schema.json
  * in the backend repo). Kept deliberately close to the schema; the export
  * pipeline guarantees this shape.
  */

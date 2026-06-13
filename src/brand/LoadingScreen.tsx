@@ -1,5 +1,5 @@
 /**
- * Loading screen — a prominent brand slot. Shows the "evidentry · by Periapsis"
+ * Loading screen — a prominent brand slot. Shows the "providence · by Periapsis"
  * lockup with a subtly animated error-bar (the project's signature mark). The
  * animation is a placeholder flourish; easy to restyle later.
  */

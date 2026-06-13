@@ -1,5 +1,5 @@
 /**
- * Tooltip copy for the statistics, adapted from evidentry/stats.py docstrings.
+ * Tooltip copy for the statistics, adapted from providence/stats.py docstrings.
  * This is the layer that makes the rigor visible — keep it accurate to the
  * backend. Wording trimmed for a tooltip; the math is unchanged.
  */
@@ -52,7 +52,7 @@ export const STAT_COPY = {
 
   notComparable:
     'Not comparable: the dataset, metric, or runs-per-item changed between ' +
-    'versions, so a p-value here would be rigorous-looking nonsense. evidentry ' +
+    'versions, so a p-value here would be rigorous-looking nonsense. providence ' +
     'flags it instead of testing it.',
 } as const
 

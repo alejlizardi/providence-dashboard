@@ -1,24 +1,24 @@
 /**
- * Brand slots. The evidentry mark is a PLACEHOLDER (the error-bar glyph) until
- * a real evidentry logo is made; PeriapsisMark renders the real vendored asset.
- * In prominent places we compose "Evidentry [mark] · by Periapsis [mark]" via
+ * Brand slots. The providence mark is a PLACEHOLDER (the error-bar glyph) until
+ * a real providence logo is made; PeriapsisMark renders the real vendored asset.
+ * In prominent places we compose "Providence [mark] · by Periapsis [mark]" via
  * <BrandLockup variant="full" />. Everything here is presentational so the
- * real logo drops into EvidentryMark with no other changes.
+ * real logo drops into ProvidenceMark with no other changes.
  */
 import { BRAND } from '../theme'
 
 const base = import.meta.env.BASE_URL
 
-/** Placeholder evidentry mark: a confidence-interval error bar. Swap later. */
-export function EvidentryMark({ size = 22 }: { size?: number }) {
+/** Placeholder providence mark: a confidence-interval error bar. Swap later. */
+export function ProvidenceMark({ size = 22 }: { size?: number }) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 32 32"
       role="img"
-      aria-label="evidentry"
-      data-placeholder="evidentry-logo"
+      aria-label="providence"
+      data-placeholder="providence-logo"
     >
       <rect width="32" height="32" rx="7" fill={BRAND.accent} />
       <line x1="7" y1="16" x2="25" y2="16" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
@@ -42,16 +42,16 @@ export function PeriapsisMark({ size = 18 }: { size?: number }) {
   )
 }
 
-export function EvidentryWordmark() {
+export function ProvidenceWordmark() {
   return (
-    <span className="font-semibold tracking-tight text-slate-900">evidentry</span>
+    <span className="font-semibold tracking-tight text-slate-900">providence</span>
   )
 }
 
 /**
  * variant:
- *  - "compact": evidentry mark + wordmark (header corners)
- *  - "full":    "evidentry · by Periapsis" lockup (loading, hero, footer)
+ *  - "compact": providence mark + wordmark (header corners)
+ *  - "full":    "providence · by Periapsis" lockup (loading, hero, footer)
  */
 export function BrandLockup({
   variant = 'compact',
@@ -62,8 +62,8 @@ export function BrandLockup({
 }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <EvidentryMark size={size} />
-      <EvidentryWordmark />
+      <ProvidenceMark size={size} />
+      <ProvidenceWordmark />
       {variant === 'full' && (
         <span className="ml-1 inline-flex items-center gap-1.5 text-sm text-slate-400">
           <span aria-hidden>·</span>

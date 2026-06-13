@@ -76,7 +76,7 @@ export const CHART = {
   grid: '#eef2f7',
 } as const
 
-/** Brand accents (placeholder until the evidentry logo + palette land). */
+/** Brand accents (placeholder until the providence logo + palette land). */
 export const BRAND = {
   accent: '#6366f1', // indigo-500 (placeholder)
   ink: '#0f172a', // slate-900

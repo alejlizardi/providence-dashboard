@@ -6,6 +6,6 @@ import tailwindcss from '@tailwindcss/vite'
 // assets from the wrong URL and renders a blank page.
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/evidentry-dashboard/',
+  base: '/providence-dashboard/',
   plugins: [react(), tailwindcss()],
 })

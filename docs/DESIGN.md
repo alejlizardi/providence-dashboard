@@ -1,4 +1,4 @@
-# evidentry-dashboard — Design Brief
+# providence-dashboard — Design Brief
 
 A one-page brief for the aesthetic pass (usable as context for **Claude Design**
 at claude.ai/design, or as the spec I work from in Claude Code). The app is
@@ -39,12 +39,12 @@ Aesthetics may restyle *how* these look; they may not remove *what* they encode.
 
 ## Logos & brand
 
-### evidentry — glyph (KEEP) + wordmark (MAKE)
-- **Glyph: keep the current indigo sliding-bar mark** ([`src/brand/Brand.tsx`](../src/brand/Brand.tsx) `EvidentryMark`, mirrored in [`public/favicon.svg`](../public/favicon.svg)). It's a confidence-interval error bar — on-concept. Don't replace it.
-- **Wordmark: NEEDS TO BE MADE.** Stylize **"evidentry"** in **lowercase**, in a **sleek, ideally italicized** typographic treatment that conjures **math / scientific associations** — think the feel of a math typeface (italic serif like Computer Modern / Latin Modern math italic), or a precise technical sans with mathematical poise. It should sit naturally beside the indigo glyph. *This is the single concrete net-new asset to produce.*
+### providence — glyph (KEEP) + wordmark (MAKE)
+- **Glyph: keep the current indigo sliding-bar mark** ([`src/brand/Brand.tsx`](../src/brand/Brand.tsx) `ProvidenceMark`, mirrored in [`public/favicon.svg`](../public/favicon.svg)). It's a confidence-interval error bar — on-concept. Don't replace it.
+- **Wordmark: NEEDS TO BE MADE.** Stylize **"providence"** in **lowercase**, in a **sleek, ideally italicized** typographic treatment that conjures **math / scientific associations** — think the feel of a math typeface (italic serif like Computer Modern / Latin Modern math italic), or a precise technical sans with mathematical poise. It should sit naturally beside the indigo glyph. *This is the single concrete net-new asset to produce.*
 
 ### Periapsis — used as "by Periapsis" maker's mark
-- In prominent spots, compose **"evidentry [glyph] · by Periapsis [periapsis glyph]"**.
+- In prominent spots, compose **"providence [glyph] · by Periapsis [periapsis glyph]"**.
 - **Use `C:\Users\epica\Periapsis\Logos\periapsis_glyph.svg`** (the orbit-sweep portrait mark) next to the "Periapsis" text — **not** `periapsis-mark.svg` (the flat one currently wired in). Swap the vendored asset.
 
 ### Periapsis orbit loader (NEW ARTIFACT — replaces the current static loading mark)
@@ -58,7 +58,7 @@ The loading screen ([`src/brand/LoadingScreen.tsx`](../src/brand/LoadingScreen.t
 
 - Body/UI: a clean sans (current: system stack) — fine, or tune to something with more character (e.g. Inter, which Periapsis already uses for its wordmark).
 - **Numbers and stats: tabular / monospaced figures** so percentages and intervals align — this reads as precise/quantitative and reinforces the math signal.
-- The evidentry wordmark gets its own treatment (see above).
+- The providence wordmark gets its own treatment (see above).
 
 ## Out of scope for the aesthetic pass
 
@@ -71,4 +71,4 @@ pipeline. This pass is **look, not logic.**
 - Views: `src/views/{Overview,DriftTimeline,PackView,SuiteDetail}.tsx`.
 - Brand slots: `src/brand/{Brand,LoadingScreen}.tsx`.
 - Screenshots of the current (placeholder) look: [`docs/overview.png`](overview.png), [`docs/drift.png`](drift.png), [`docs/suites.png`](suites.png).
-- Live: https://alejlizardi.github.io/evidentry-dashboard/
+- Live: https://alejlizardi.github.io/providence-dashboard/

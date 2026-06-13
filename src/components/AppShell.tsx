@@ -1,6 +1,6 @@
 /**
  * App chrome: a header with the compact brand lockup and a footer with the
- * full "evidentry · by Periapsis" lockup (a prominent brand slot). Layout
+ * full "providence · by Periapsis" lockup (a prominent brand slot). Layout
  * only — presentational, easy to restyle.
  */
 import type { ReactNode } from 'react'
@@ -28,12 +28,12 @@ export function AppShell({
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-5 text-sm text-slate-400">
           <BrandLockup variant="full" size={20} />
           <a
-            href="https://github.com/alejlizardi/evidentry"
+            href="https://github.com/alejlizardi/providence"
             className="hover:text-slate-600"
             target="_blank"
             rel="noreferrer"
           >
-            github.com/alejlizardi/evidentry
+            github.com/alejlizardi/providence
           </a>
         </div>
       </footer>
