@@ -32,11 +32,11 @@ export function DriftTimeline({
   const timelines = withDriftFirst(buildTimelines(index, packs, drift))
 
   return (
-    <div style={{ animation: 'provIn .5s ease', paddingTop: 80 }}>
+    <div className="prov-view-top" style={{ animation: 'provIn .5s ease', paddingTop: 80 }}>
       <div style={{ fontSize: 12, letterSpacing: '0.1em', color: BRAND.accent, marginBottom: 26 }}>
         Drift detection
       </div>
-      <h1 style={{ margin: 0, fontSize: 46, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
+      <h1 className="prov-view-title" style={{ margin: 0, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
         Drift over versions
       </h1>
       <p style={{ margin: '24px 0 48px', fontSize: 16, lineHeight: 1.65, color: UI.textMuted, maxWidth: 720 }}>

@@ -25,17 +25,14 @@ export function AppShell({
   onTab: (t: Tab) => void
 }) {
   return (
-    <div className="flex min-h-full" style={{ background: UI.bg, color: UI.text }}>
-      <aside
-        className="sticky top-0 flex h-screen flex-shrink-0 flex-col justify-between"
-        style={{ width: 238, padding: '34px 28px', background: UI.bg }}
-      >
+    <div className="prov-shell" style={{ background: UI.bg, color: UI.text }}>
+      <aside className="prov-sidebar" style={{ background: UI.bg }}>
         <div>
           <div className="mb-12 flex items-center gap-3">
             <Glyph size={26} />
             <ProvidenceWordmark height={19} />
           </div>
-          <nav className="flex flex-col gap-2.5">
+          <nav className="prov-sidebar-nav flex flex-col gap-2.5">
             {NAV.map((n) => (
               <button
                 key={n.id}
@@ -59,7 +56,7 @@ export function AppShell({
           </nav>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="prov-sidebar-meta flex flex-col gap-6">
           <div>
             <div
               className="mb-2 uppercase"
@@ -97,9 +94,7 @@ export function AppShell({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1" style={{ padding: '0 58px 100px' }}>
-        {children}
-      </main>
+      <main className="prov-main">{children}</main>
     </div>
   )
 }

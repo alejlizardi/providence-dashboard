@@ -28,14 +28,14 @@ export function Overview({
   const modelName = index[0]?.model_name
 
   return (
-    <div style={{ animation: 'provIn .5s ease', paddingTop: 70 }}>
+    <div className="prov-view-top" style={{ animation: 'provIn .5s ease', paddingTop: 70 }}>
       <div style={{ fontSize: 12, letterSpacing: '0.1em', color: BRAND.accent, marginBottom: 26 }}>
         Statistical evidence engine
       </div>
       <h1
+        className="prov-hero-title"
         style={{
           margin: '0 0 18px',
-          fontSize: 52,
           lineHeight: 1.0,
           fontWeight: 700,
           letterSpacing: '-0.03em',

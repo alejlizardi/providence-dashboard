@@ -21,13 +21,13 @@ export function PackView({
 }) {
   const m = pack.model
   return (
-    <div style={{ animation: 'provIn .5s ease', paddingTop: 80 }}>
-      <div className="flex items-end justify-between gap-5">
+    <div className="prov-view-top" style={{ animation: 'provIn .5s ease', paddingTop: 80 }}>
+      <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-4">
         <div>
           <div style={{ fontSize: 12, letterSpacing: '0.1em', color: BRAND.accent, marginBottom: 26 }}>
             Suite detail · v{m.version}
           </div>
-          <h1 style={{ margin: 0, fontSize: 46, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
+          <h1 className="prov-view-title" style={{ margin: 0, lineHeight: 1.02, fontWeight: 700, letterSpacing: '-0.03em', color: UI.textStrong }}>
             Suite detail
           </h1>
         </div>

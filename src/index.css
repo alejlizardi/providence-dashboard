@@ -55,9 +55,99 @@ body {
   background: #1a1a1a !important;
 }
 
+/* ---------------------------------------------------------------- Layout --
+
+   Desktop-first: a fixed left sidebar + a wide scrolling main column. The
+   media queries below collapse it for tablet/phone. Magic numbers that need
+   to be responsive live here (inline styles can't hold breakpoints). */
+
+.prov-shell {
+  display: flex;
+  min-height: 100%;
+}
+
+.prov-sidebar {
+  width: 238px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 34px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.prov-main {
+  flex: 1;
+  min-width: 0;
+  padding: 0 58px 100px;
+}
+
+/* The Overview hero headline scales with viewport via clamp(). */
+.prov-hero-title {
+  font-size: clamp(32px, 8vw, 52px);
+}
+.prov-view-title {
+  font-size: clamp(30px, 7vw, 46px);
+}
+
+/* Tablet / phone: the sidebar becomes a top bar and the layout stacks. */
+@media (max-width: 860px) {
+  .prov-shell {
+    flex-direction: column;
+  }
+  .prov-sidebar {
+    width: auto;
+    height: auto;
+    position: static;
+    padding: 20px 20px 0;
+  }
+  /* Sidebar internals: lay the brand + nav + meta out horizontally, drop the
+     space-between that was pinning meta to the bottom of a full-height column. */
+  .prov-sidebar {
+    justify-content: flex-start;
+    gap: 18px;
+  }
+  .prov-sidebar-nav {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 18px !important;
+  }
+  .prov-sidebar-nav button {
+    font-size: 20px !important;
+  }
+  /* The Method / By-Periapsis / GitHub block is desktop chrome; hide on phone
+     to keep the top bar compact (it stays in the footer-less main flow). */
+  .prov-sidebar-meta {
+    display: none !important;
+  }
+  .prov-main {
+    padding: 0 20px 64px;
+  }
+  .prov-view-top {
+    padding-top: 32px !important;
+  }
+}
+
+/* Feature card + any 2-col splits collapse to one column earlier. */
 @media (max-width: 1080px) {
   .prov-feature {
     grid-template-columns: 1fr !important;
     gap: 34px !important;
+  }
+}
+
+/* On phones, tighten the generous card padding so content doesn't overflow. */
+@media (max-width: 600px) {
+  .prov-feature {
+    padding: 28px 22px !important;
+  }
+}
+
+/* Drift's 2-up chart grid stacks on narrow screens. */
+@media (max-width: 760px) {
+  .prov-drift-grid {
+    grid-template-columns: 1fr !important;
   }
 }
