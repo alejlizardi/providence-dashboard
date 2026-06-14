@@ -225,9 +225,7 @@ export function MatrixCanvas({ opacity = 0.5, className }: { opacity?: number; c
     const draw = () => {
       if (!canvas.isConnected) return
       if (Math.abs(canvas.getBoundingClientRect().width - W) > 2) resize()
-      // Per-frame fade that creates the trailing tails. Weaker alpha => glyphs
-      // persist longer => longer tails (0.11 -> ~0.037 ≈ 3x longer trails).
-      ctx.fillStyle = 'rgba(20,20,20,0.037)'
+      ctx.fillStyle = 'rgba(20,20,20,0.11)'
       ctx.fillRect(0, 0, W, H)
       ctx.font = fs + "px 'Geist Mono', monospace"
       for (let i = 0; i < drops.length; i++) {
@@ -238,7 +236,7 @@ export function MatrixCanvas({ opacity = 0.5, className }: { opacity?: number; c
         ctx.fillStyle = 'rgba(124,132,255,0.30)'
         ctx.fillText(chars[(Math.random() * chars.length) | 0], x, y - fs)
         if (y > H && Math.random() > 0.972) drops[i] = Math.random() * -16
-        drops[i] += 0.1 // fall speed (0.4 -> 0.2 -> 0.1; halved again)
+        drops[i] += 0.4
       }
       raf = requestAnimationFrame(draw)
     }
