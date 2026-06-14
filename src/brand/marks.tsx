@@ -236,7 +236,7 @@ export function MatrixCanvas({ opacity = 0.5, className }: { opacity?: number; c
         ctx.fillStyle = 'rgba(124,132,255,0.30)'
         ctx.fillText(chars[(Math.random() * chars.length) | 0], x, y - fs)
         if (y > H && Math.random() > 0.972) drops[i] = Math.random() * -16
-        drops[i] += 0.4
+        drops[i] += 0.2 // fall speed (was 0.4 — halved, easier on the eyes)
       }
       raf = requestAnimationFrame(draw)
     }
