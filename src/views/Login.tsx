@@ -10,7 +10,7 @@
  */
 import { useState } from 'react'
 import { BRAND, UI } from '../theme'
-import { ProvidenceWordmark, PeriapsisGlyph } from '../brand/Brand'
+import { ProvidenceWordmark, PeriapsisLockup } from '../brand/Brand'
 import { MatrixCanvas } from '../brand/marks'
 
 export function Login({
@@ -46,13 +46,13 @@ export function Login({
           gap: 28,
         }}
       >
-        {/* Brand lockup */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        {/* Brand lockup: providence · by [Periapsis wordmark + orange glyph] */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <ProvidenceWordmark height={28} />
           <span style={{ fontSize: 11, letterSpacing: '0.04em', color: UI.textDim }}>
-            by Periapsis
+            by
           </span>
-          <PeriapsisGlyph size={24} />
+          <PeriapsisLockup height={20} />
         </div>
 
         <div
