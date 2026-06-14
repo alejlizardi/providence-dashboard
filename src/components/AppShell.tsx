@@ -19,10 +19,15 @@ export function AppShell({
   children,
   tab,
   onTab,
+  sessionLabel,
+  onLogOut,
 }: {
   children: ReactNode
   tab: Tab
   onTab: (t: Tab) => void
+  /** Short label for the current identity ("Demo", "Your org"). */
+  sessionLabel?: string
+  onLogOut?: () => void
 }) {
   return (
     <div className="prov-shell" style={{ background: UI.bg, color: UI.text }}>
@@ -82,6 +87,33 @@ export function AppShell({
               <PeriapsisGlyph size={28} />
             </div>
           </div>
+          {onLogOut && (
+            <div>
+              <div
+                className="mb-2 uppercase"
+                style={{ fontSize: 10.5, letterSpacing: '0.12em', color: UI.textFaint }}
+              >
+                Session
+              </div>
+              <div className="flex items-center gap-2.5" style={{ fontSize: 13 }}>
+                <span style={{ color: '#b8b8b3' }}>{sessionLabel}</span>
+                <button
+                  onClick={onLogOut}
+                  style={{
+                    border: 0,
+                    background: 'transparent',
+                    padding: 0,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    color: UI.textDim,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          )}
           <a
             href="https://github.com/alejlizardi/providence"
             target="_blank"

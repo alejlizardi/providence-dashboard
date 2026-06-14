@@ -7,19 +7,21 @@
  * (inside a versioned envelope), and index/drift rows field-for-field — so
  * nothing downstream of `SiteData` changes; only where the numbers come from.
  *
- * Config (Vite env, with live defaults so it runs with no .env):
+ * Auth: the caller's Session decides identity. A keyed session sends
+ * `Authorization: Bearer <key>` (real org); the demo session sends no header
+ * and the backend serves the public demo org read-only. The org is the key's,
+ * never something the client names.
+ *
+ * Config (Vite env):
  *   VITE_API_BASE — API origin (default: the deployed Render service)
- *   VITE_ORG_ID   — the tenant whose evidence to show, sent as X-Org-Id
- *                   (dev-stub auth for now; becomes a real session/key later)
  */
 import { useEffect, useState } from 'react'
+import { authHeaders, type Session } from './auth'
 import type { DriftPair, IndexEntry, Pack } from './types'
 
 const API_BASE = (
   import.meta.env.VITE_API_BASE ?? 'https://periapsis-platform.onrender.com'
 ).replace(/\/$/, '')
-const ORG_ID =
-  import.meta.env.VITE_ORG_ID ?? '9d9a129f-e476-40c9-b9ba-6d95276dacdb'
 
 const PROVIDENCE = `${API_BASE}/api/v1/providence`
 
@@ -64,8 +66,11 @@ interface DriftResponse {
 
 // --- fetch helpers -----------------------------------------------------------
 
-async function getJSON<T>(url: string): Promise<T> {
-  const r = await fetch(url, { headers: { 'X-Org-Id': ORG_ID } })
+async function getJSON<T>(
+  url: string,
+  headers: Record<string, string>,
+): Promise<T> {
+  const r = await fetch(url, { headers })
   if (!r.ok) {
     // Surface the API's structured error message when there is one.
     let detail = `HTTP ${r.status}`
@@ -85,7 +90,10 @@ async function getJSON<T>(url: string): Promise<T> {
  * A non-null next_cursor must always advance. The server's keyset scheme
  * guarantees that, but we add two cheap backstops so a server bug can't hang
  * the UI: stop if a cursor repeats, and cap the page count outright. */
-async function getAllPages<T>(path: string): Promise<T[]> {
+async function getAllPages<T>(
+  path: string,
+  headers: Record<string, string>,
+): Promise<T[]> {
   const out: T[] = []
   let cursor: string | null = null
   let prevCursor: string | null = null
@@ -93,7 +101,7 @@ async function getAllPages<T>(path: string): Promise<T[]> {
     const url = cursor
       ? `${PROVIDENCE}${path}?cursor=${encodeURIComponent(cursor)}`
       : `${PROVIDENCE}${path}`
-    const body: Page<T> = await getJSON<Page<T>>(url)
+    const body: Page<T> = await getJSON<Page<T>>(url, headers)
     out.push(...body.items)
     if (!body.next_cursor || body.next_cursor === prevCursor) break
     prevCursor = cursor
@@ -121,8 +129,9 @@ export type LoadState =
  * For the showcase there is one model; we render its full validation history.
  * (Multi-model selection is a later view — the API already paginates models.)
  */
-async function loadSiteData(): Promise<SiteData> {
-  const models = await getAllPages<ModelSummary>('/models')
+async function loadSiteData(session: Session): Promise<SiteData> {
+  const headers = authHeaders(session)
+  const models = await getAllPages<ModelSummary>('/models', headers)
   if (models.length === 0) {
     throw new Error('No models found for this org yet.')
   }
@@ -132,13 +141,14 @@ async function loadSiteData(): Promise<SiteData> {
   // series label (id) and the UUID (pack_id) we fetch the full pack with.
   const entries = await getAllPages<PackIndexEntry>(
     `/models/${model.id}/packs`,
+    headers,
   )
 
   // The full pack for every version, keyed by the SAME id the index uses
   // (pack_ref), so App.tsx's `packs[entry.id]` lookups line up.
   const packEnvelopes = await Promise.all(
     entries.map((e) =>
-      getJSON<PackEnvelope>(`${PROVIDENCE}/packs/${e.pack_id}`),
+      getJSON<PackEnvelope>(`${PROVIDENCE}/packs/${e.pack_id}`, headers),
     ),
   )
   const packs: Record<string, Pack> = {}
@@ -146,7 +156,7 @@ async function loadSiteData(): Promise<SiteData> {
 
   // Drift across consecutive versions (the engine computes it pairwise on
   // demand; the static export precomputed it). One call per adjacent pair.
-  const drift = await buildDriftSeries(entries)
+  const drift = await buildDriftSeries(entries, headers)
 
   const index: IndexEntry[] = entries.map((e) => ({
     id: e.id,
@@ -164,12 +174,14 @@ async function loadSiteData(): Promise<SiteData> {
 /** One DriftPair per adjacent (older -> newer) version in the history. */
 async function buildDriftSeries(
   entries: PackIndexEntry[],
+  headers: Record<string, string>,
 ): Promise<DriftPair[]> {
   const pairs = await Promise.all(
     entries.slice(1).map(async (cur, i) => {
       const prev = entries[i] // entries[i] is the one before cur
       const resp = await getJSON<DriftResponse>(
         `${PROVIDENCE}/packs/${cur.pack_id}/drift?baseline=${prev.pack_id}`,
+        headers,
       )
       const pair: DriftPair = {
         from_id: prev.id,
@@ -184,17 +196,20 @@ async function buildDriftSeries(
   return pairs
 }
 
-export function useSiteData(): LoadState {
+export function useSiteData(session: Session): LoadState {
   const [state, setState] = useState<LoadState>({ status: 'loading' })
 
   useEffect(() => {
     let alive = true
-    loadSiteData()
+    loadSiteData(session)
       .then((data) => alive && setState({ status: 'ready', data }))
       .catch((e) => alive && setState({ status: 'error', error: String(e) }))
     return () => {
       alive = false
     }
+    // session is stable for the lifetime of a mounted Dashboard (App remounts
+    // it via `key` when identity changes), so this runs exactly once per login.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return state
