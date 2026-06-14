@@ -22,15 +22,14 @@ export function PeriapsisGlyph({ size = 26 }: { size?: number }) {
 }
 
 /**
- * The full "Periapsis" wordmark + built-in orange orbit glyph, as one lockup.
- * Light-filled variant for dark surfaces (the periapsis point stays orange).
- * Sized by height; the wordmark already includes the glyph, so don't pair it
- * with a separate PeriapsisGlyph.
+ * The "Periapsis" wordmark + the orange orbit-sweep glyph, as one lockup
+ * (the official dark-surface lockup: light text, orange portrait glyph). The
+ * glyph is built in, so don't pair it with a separate PeriapsisGlyph.
  */
 export function PeriapsisLockup({ height = 18 }: { height?: number }) {
   return (
     <img
-      src={`${base}brand/periapsis-lockup-light.svg`}
+      src={`${base}brand/periapsis-glyph-lockup-dark.svg`}
       alt="Periapsis"
       style={{ height, width: 'auto', display: 'block' }}
     />
