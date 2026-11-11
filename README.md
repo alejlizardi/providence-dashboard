@@ -52,7 +52,11 @@ npm run build    # -> dist/
 
 ## Data
 
-The app renders static JSON produced by `providence export` — see the
+**View demo** renders the static JSON committed under `public/data/`, so the
+public showcase has no backend dependency. Signing in with an API key instead
+reads that org's evidence from the hosted periapsis API (`VITE_API_BASE`).
+
+The demo data is produced by `providence export` — see the
 [**providence** repo](https://github.com/alejlizardi/providence) for the library,
 the `results.json` [schema](https://github.com/alejlizardi/providence/tree/main/schema),
 and the example model-history series this dashboard visualizes. The committed

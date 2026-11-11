@@ -1,19 +1,23 @@
 /**
  * Data access for the dashboard.
  *
- * Source of truth is the live periapsis API (the hosted providence service),
- * not the static JSON that used to ship under public/data/. The API serves the
- * SAME engine shapes the views already consume — a pack's results.json verbatim
- * (inside a versioned envelope), and index/drift rows field-for-field — so
- * nothing downstream of `SiteData` changes; only where the numbers come from.
+ * Two sources, chosen by the caller's Session:
  *
- * Auth: the caller's Session decides identity. A keyed session sends
- * `Authorization: Bearer <key>` (real org); the demo session sends no header
- * and the backend serves the public demo org read-only. The org is the key's,
- * never something the client names.
+ *   - demo  — the static JSON bundled under public/data/ (produced by
+ *             `providence export`). No network dependency beyond the page's
+ *             own host, so the public showcase loads instantly and stays up
+ *             even when the hosted backend is asleep or offline.
+ *   - keyed — the live periapsis API (the hosted providence service), sent
+ *             `Authorization: Bearer <key>`. The org is the key's, never
+ *             something the client names.
+ *
+ * Both produce the SAME engine shapes — a pack's results.json verbatim, and
+ * index/drift rows field-for-field — so nothing downstream of `SiteData`
+ * changes; only where the numbers come from.
  *
  * Config (Vite env):
- *   VITE_API_BASE — API origin (default: the deployed Render service)
+ *   VITE_API_BASE — API origin for keyed sessions (default: the deployed
+ *                   Render service). The demo never touches it.
  */
 import { useEffect, useState } from 'react'
 import { authHeaders, type Session } from './auth'
@@ -123,13 +127,41 @@ export type LoadState =
   | { status: 'error'; error: string }
   | { status: 'ready'; data: SiteData }
 
+// --- static demo source ------------------------------------------------------
+
+const STATIC_DATA = import.meta.env.BASE_URL + 'data/'
+
+async function getStatic<T>(path: string): Promise<T> {
+  const r = await fetch(STATIC_DATA + path)
+  if (!r.ok) throw new Error(`${STATIC_DATA + path} — HTTP ${r.status}`)
+  return r.json() as Promise<T>
+}
+
+/** Build SiteData from the bundled `providence export` output (demo mode). */
+async function loadStaticSiteData(): Promise<SiteData> {
+  const [index, drift] = await Promise.all([
+    getStatic<IndexEntry[]>('index.json'),
+    getStatic<DriftPair[]>('drift.json'),
+  ])
+  const packList = await Promise.all(
+    index.map((e) => getStatic<Pack>(`packs/${e.id}.json`)),
+  )
+  const packs: Record<string, Pack> = {}
+  index.forEach((e, i) => (packs[e.id] = packList[i]))
+  return { index, packs, drift }
+}
+
+// --- live API source ---------------------------------------------------------
+
 /**
- * Build the dashboard's SiteData from the live API.
+ * Build the dashboard's SiteData: the bundled static export for the demo,
+ * the live API for a keyed session.
  *
  * For the showcase there is one model; we render its full validation history.
  * (Multi-model selection is a later view — the API already paginates models.)
  */
 async function loadSiteData(session: Session): Promise<SiteData> {
+  if (session.mode !== 'keyed') return loadStaticSiteData()
   const headers = authHeaders(session)
   const models = await getAllPages<ModelSummary>('/models', headers)
   if (models.length === 0) {
